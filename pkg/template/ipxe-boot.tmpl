@@ -9,7 +9,7 @@ item create   Install Harvester (Automatic)
 item join     Join Harvester Cluster
 item --gap -- -----------------------------------------------
 item shell    Drop to iPXE shell
-choose --default create --timeout 5000 target && goto ${target}
+choose --default create target && goto ${target}
 
 :create
   chain ${base-url}/harvester/ipxe-create
