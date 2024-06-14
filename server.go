@@ -1,5 +1,7 @@
 package main
 
+//go:generate go run pkg/template/generate.go
+
 import (
 	"log"
 	"net/http"

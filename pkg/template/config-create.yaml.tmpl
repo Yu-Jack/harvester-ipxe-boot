@@ -28,6 +28,6 @@ install:
       miimon: 100
   skipcheck: true
   device: /dev/vda # The target disk to install
-  iso_url: http://x.x.x.x/harvester/harvester-v1.3.0-amd64.iso # Replace with iso source
-  vip: 192.168.122.62        # The VIP to access the Harvester GUI. Make sure the IP is free to use
+  iso_url: {{.BaseURL}}/harvester/harvester-{{.Version}}-amd64.iso # Replace with iso source
+  vip: {{.PrimaryIP}}        # The VIP to access the Harvester GUI. Make sure the IP is free to use
   vip_mode: static           # Or dhcp, check configuration file for more information

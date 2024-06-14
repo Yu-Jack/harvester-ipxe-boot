@@ -1,4 +1,8 @@
+.idea
 node_modules
 public/harvester/harvester*
 public/harvester/config-create.yaml
 public/harvester/config-join.yaml
+public/harvester/ipxe-boot
+public/harvester/ipxe-create
+public/harvester/ipxe-join

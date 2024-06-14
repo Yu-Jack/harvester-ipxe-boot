@@ -1,7 +1,7 @@
 #!ipxe
 
-set base-url http://192.168.1.122:3333
-set version v1.3.0
+# Define URL prefix and version variables
+set base-url {{.BaseURL}}
 
 menu iPXE Boot Menu
 item --gap -- ------------ Harvester Boot Options ------------
@@ -28,4 +28,3 @@ choose --default create --timeout 5000 target && goto ${target}
   reboot
 
 :end
-

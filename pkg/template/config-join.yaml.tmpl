@@ -1,6 +1,6 @@
 scheme_version: 1
 token: token # Replace with a desired token
-server_url: https://192.168.122.62:443 # Should be the VIP set up in "CREATE" config
+server_url: https://{{.PrimaryIP}}:443 # Should be the VIP set up in "CREATE" config
 os:
   hostname: node1 # Set a hostname. This can be omitted if DHCP server offers hostnames
   ssh_authorized_keys:
@@ -29,6 +29,6 @@ install:
       miimon: 100
   skipcheck: true
   device: /dev/vda # The target disk to install
-  iso_url: http://x.x.x.x/harvester/harvester-v1.3.0-amd64.iso # Replace with iso source
-  vip: 192.168.122.63       # The VIP to access the Harvester GUI. Make sure the IP is free to use
+  iso_url: {{.BaseURL}}/harvester/harvester-{{.Version}}-amd64.iso # Replace with iso source
+  vip: {{.SecondaryIP}}      # The VIP to access the Harvester GUI. Make sure the IP is free to use
   vip_mode: static           # Or dhcp, check configuration file for more information
