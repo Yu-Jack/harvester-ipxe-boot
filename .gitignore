@@ -1,0 +1,4 @@
+node_modules
+public/harvester/harvester*
+public/harvester/config-create.yaml
+public/harvester/config-join.yaml

@@ -1,0 +1,34 @@
+scheme_version: 1
+token: token # Replace with a desired token
+server_url: https://192.168.122.62:443 # Should be the VIP set up in "CREATE" config
+os:
+  hostname: node1 # Set a hostname. This can be omitted if DHCP server offers hostnames
+  ssh_authorized_keys:
+  - ssh-rsa your_pb_key
+  password: "..."     # Replace with your password
+  modules:
+    - rbd
+    - nbd
+    - kvm
+    - nvme
+  ntp_servers:
+    - 0.suse.pool.ntp.org
+    - 1.suse.pool.ntp.org
+  dns_nameservers:
+    - 8.8.8.8
+    - 1.1.1.1
+install:
+  mode: join
+  management_interface:
+    interfaces:
+      - name: enp1s0 # Replace with your interface
+    default_route: true
+    method: dhcp
+    bond_options:
+      mode: balance-tlb
+      miimon: 100
+  skipcheck: true
+  device: /dev/vda # The target disk to install
+  iso_url: http://x.x.x.x/harvester/harvester-v1.3.0-amd64.iso # Replace with iso source
+  vip: 192.168.122.63       # The VIP to access the Harvester GUI. Make sure the IP is free to use
+  vip_mode: static           # Or dhcp, check configuration file for more information

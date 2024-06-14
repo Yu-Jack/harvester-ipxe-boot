@@ -1,0 +1,31 @@
+#!ipxe
+
+set base-url http://192.168.1.122:3333
+set version v1.3.0
+
+menu iPXE Boot Menu
+item --gap -- ------------ Harvester Boot Options ------------
+item create   Install Harvester (Automatic)
+item join     Join Harvester Cluster
+item --gap -- -----------------------------------------------
+item shell    Drop to iPXE shell
+choose --default create --timeout 5000 target && goto ${target}
+
+:create
+  chain ${base-url}/harvester/ipxe-create
+  goto end
+
+:join
+  chain ${base-url}/harvester/ipxe-join
+  goto end
+
+:shell
+  shell
+  goto end
+
+:abort
+  echo Aborted
+  reboot
+
+:end
+

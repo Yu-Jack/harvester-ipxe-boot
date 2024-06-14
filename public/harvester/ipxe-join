@@ -1,0 +1,9 @@
+#!ipxe
+
+set base-url http://192.168.1.122:3333
+set version v1.3.0
+
+kernel ${base-url}/harvester/harvester-${version}-vmlinuz-amd64 ip=dhcp net.ifnames=1 rd.cos.disable rd.noverifyssl console=tty1 root=live:${base-url}/harvester/harvester-${version}-rootfs-amd64.squashfs harvester.install.automatic=true harvester.install.config_url=${base-url}/harvester/config-join.yaml
+initrd ${base-url}/harvester/harvester-${version}-initrd-amd64
+boot
+
