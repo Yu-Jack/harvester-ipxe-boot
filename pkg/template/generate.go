@@ -10,13 +10,14 @@ import (
 )
 
 var (
-	config      = Config{BaseURL: baseURL, Version: version, PrimaryIP: primaryIP, SecondaryIP: secondaryIP}
 	version     = "v1.3.0"
 	outputDir   = "./public/harvester"
 	templateDir = "./pkg/template"
 	baseURL     = "http://192.168.1.122:3333" // ISO files are served from this URL
 	primaryIP   = "192.168.122.61"
 	secondaryIP = "192.168.122.62"
+	token       = "123"
+	config      = Config{BaseURL: baseURL, Version: version, PrimaryIP: primaryIP, SecondaryIP: secondaryIP, Token: token}
 )
 
 type Config struct {
@@ -24,6 +25,7 @@ type Config struct {
 	Version     string
 	PrimaryIP   string
 	SecondaryIP string
+	Token       string
 }
 
 func main() {
