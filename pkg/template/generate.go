@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	// Replace these values with your own
 	version     = "v1.3.0"
 	outputDir   = "./public/harvester"
 	templateDir = "./pkg/template"
@@ -17,7 +18,15 @@ var (
 	primaryIP   = "192.168.122.61"
 	secondaryIP = "192.168.122.62"
 	token       = "123"
-	config      = Config{BaseURL: baseURL, Version: version, PrimaryIP: primaryIP, SecondaryIP: secondaryIP, Token: token}
+
+	config    = Config{BaseURL: baseURL, Version: version, PrimaryIP: primaryIP, SecondaryIP: secondaryIP, Token: token}
+	templates = map[string]string{
+		"ipxe-boot":          "ipxe-boot.tmpl",
+		"ipxe-create":        "ipxe-create.tmpl",
+		"ipxe-join":          "ipxe-join.tmpl",
+		"config-create.yaml": "config-create.yaml.tmpl",
+		"config-join.yaml":   "config-join.yaml.tmpl",
+	}
 )
 
 type Config struct {
@@ -30,8 +39,7 @@ type Config struct {
 
 func main() {
 	downloadISOFiles()
-	generateIPXEConfig()
-	generateHarvesterConfig()
+	generateIPXEAndHarvesterConfigs()
 }
 
 func downloadISOFiles() {
@@ -83,41 +91,22 @@ func downloadFile(url, filePath string) error {
 	return err
 }
 
-func generateIPXEConfig() {
-	// Load templates
-	bootTmpl, err := loadTemplate(fmt.Sprintf("%s/%s", templateDir, "ipxe-boot.tmpl"))
-	if err != nil {
-		log.Fatalf("Failed to load ipxe-boot template: %v", err)
-	}
-
-	createTmpl, err := loadTemplate(fmt.Sprintf("%s/%s", templateDir, "ipxe-create.tmpl"))
-	if err != nil {
-		log.Fatalf("Failed to load ipxe-create template: %v", err)
-	}
-
-	joinTmpl, err := loadTemplate(fmt.Sprintf("%s/%s", templateDir, "ipxe-join.tmpl"))
-	if err != nil {
-		log.Fatalf("Failed to load ipxe-join template: %v", err)
-	}
-
-	// Generate iPXE files
-	files := map[string]*template.Template{
-		"ipxe-boot":   bootTmpl,
-		"ipxe-create": createTmpl,
-		"ipxe-join":   joinTmpl,
-	}
-
-	// Create the target directory if it doesn't exist
-	err = os.MkdirAll(outputDir, os.ModePerm)
+func generateIPXEAndHarvesterConfigs() {
+	err := os.MkdirAll(outputDir, os.ModePerm)
 	if err != nil {
 		log.Fatalf("Failed to create directory: %v", err)
 	}
 
 	// Generate each file
-	for fileName, tmpl := range files {
+	for fileName, tmpl := range templates {
+		tmp, err := template.ParseFiles(fmt.Sprintf("%s/%s", templateDir, tmpl))
+		if err != nil {
+			log.Fatalf("Failed to load ipxe-boot template: %v", err)
+		}
+
 		filePath := fmt.Sprintf("%s/%s", outputDir, fileName)
 		log.Printf("Generating %s\n", filePath)
-		err := generateFile(tmpl, filePath, config)
+		err = generateFile(tmp, filePath, config)
 		if err != nil {
 			log.Fatalf("Failed to generate %s: %v", filePath, err)
 		}
@@ -125,14 +114,6 @@ func generateIPXEConfig() {
 	}
 
 	log.Println("All files generated successfully")
-}
-
-func loadTemplate(templatePath string) (*template.Template, error) {
-	tmpl, err := template.ParseFiles(templatePath)
-	if err != nil {
-		return nil, err
-	}
-	return tmpl, nil
 }
 
 func generateFile(tmpl *template.Template, filePath string, config Config) error {
@@ -148,42 +129,4 @@ func generateFile(tmpl *template.Template, filePath string, config Config) error
 	}
 
 	return nil
-}
-
-func generateHarvesterConfig() {
-	// Load templates
-	createTmpl, err := loadTemplate(fmt.Sprintf("%s/%s", templateDir, "config-create.yaml.tmpl"))
-	if err != nil {
-		log.Fatalf("Failed to load ipxe-boot template: %v", err)
-	}
-
-	joinTmpl, err := loadTemplate(fmt.Sprintf("%s/%s", templateDir, "config-join.yaml.tmpl"))
-	if err != nil {
-		log.Fatalf("Failed to load ipxe-create template: %v", err)
-	}
-
-	// Generate iPXE files
-	files := map[string]*template.Template{
-		"config-create.yaml": createTmpl,
-		"config-join.yaml":   joinTmpl,
-	}
-
-	// Create the target directory if it doesn't exist
-	err = os.MkdirAll(outputDir, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Failed to create directory: %v", err)
-	}
-
-	// Generate each file
-	for fileName, tmpl := range files {
-		filePath := fmt.Sprintf("%s/%s", outputDir, fileName)
-		log.Printf("Generating %s\n", filePath)
-		err := generateFile(tmpl, filePath, config)
-		if err != nil {
-			log.Fatalf("Failed to generate %s: %v", filePath, err)
-		}
-		log.Printf("Successfully generated %s\n", filePath)
-	}
-
-	log.Println("All files generated successfully")
 }
